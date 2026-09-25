@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>APEX / 01 — The Art of Speed</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: #080808;
+      color: white;
+      font-family: "Inter", sans-serif;
+      overflow-x: hidden;
+    }
+
+    ::selection {
+      background: #e10600;
+      color: white;
+    }
+
+    /* NAVBAR */
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 78px;
+      z-index: 1000;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      padding: 0 5%;
+
+      background: rgba(8, 8, 8, 0.65);
+      backdrop-filter: blur(14px);
+
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -1px;
+    }
+
+    .logo span {
+      color: #e10600;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 35px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: #aaa;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 700;
+      transition: 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: white;
+    }
+
+    .nav-btn {
+      border: 1px solid #e10600;
+      color: white;
+      padding: 11px 18px;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 800;
+      transition: 0.3s;
+    }
+
+    .nav-btn:hover {
+      background: #e10600;
+    }
+
+    /* HERO */
+
+    .hero {
+      min-height: 100vh;
+      position: relative;
+
+      display: flex;
+      align-items: center;
+
+      padding: 120px 7% 60px;
+
+      overflow: hidden;
+
+      background:
+        radial-gradient(
+          circle at 70% 45%,
+          rgba(225, 6, 0, 0.13),
+          transparent 35%
+        );
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+
+      background-size: 70px 70px;
+
+      mask-image: linear-gradient(
+        to right,
+        transparent,
+        black,
+        transparent
+      );
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      width: 50%;
+    }
+
+    .eyebrow {
+      color: #e10600;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 4px;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-family: "Bebas Neue", sans-serif;
+      font-size: clamp(80px, 11vw, 170px);
+      line-height: 0.8;
+      letter-spacing: -2px;
+    }
+
+    .hero h1 span {
+      color: #e10600;
+    }
+
+    .hero-sub {
+      max-width: 430px;
+      margin-top: 30px;
+
+      color: #999;
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .hero-btn {
+      display: inline-flex;
+      margin-top: 35px;
+
+      padding: 16px 28px;
+
+      background: #e10600;
+      color: white;
+
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 900;
+
+      transition: 0.3s;
+    }
+
+    .hero-btn:hover {
+      transform: translateY(-4px);
+      background: #ff1008;
+      box-shadow: 0 15px 40px rgba(225,6,0,0.25);
+    }
+
+    .car {
+      position: absolute;
+      width: 65%;
+      max-width: 1000px;
+
+      right: -5%;
+      top: 50%;
+
+      transform:
+        translateY(-50%)
+        rotate(-2deg);
+
+      filter:
+        drop-shadow(0 35px 40px rgba(0,0,0,0.8));
+
+      animation: carEntry 1.5s ease forwards;
+    }
+
+    @keyframes carEntry {
+      from {
+        opacity: 0;
+        transform:
+          translate(180px,-50%)
+          rotate(-5deg);
+      }
+
+      to {
+        opacity: 1;
+        transform:
+          translate(0,-50%)
+          rotate(-2deg);
+      }
+    }
+
+    .hero-meta {
+      position: absolute;
+      bottom: 40px;
+      left: 7%;
+      z-index: 3;
+
+      display: flex;
+      gap: 60px;
+    }
+
+    .meta-item small {
+      display: block;
+      color: #666;
+      font-size: 9px;
+      letter-spacing: 2px;
+      margin-bottom: 6px;
+    }
+
+    .meta-item strong {
+      font-size: 16px;
+    }
+
+    .scroll {
+      position: absolute;
+      right: 5%;
+      bottom: 40px;
+
+      writing-mode: vertical-rl;
+
+      color: #666;
+      font-size: 9px;
+      letter-spacing: 3px;
+    }
+
+    /* STATS */
+
+    .stats {
+      padding: 120px 7%;
+      background: #0d0d0d;
+    }
+
+    .section-label {
+      color: #e10600;
+      font-size: 11px;
+      letter-spacing: 4px;
+      font-weight: 900;
+      margin-bottom: 25px;
+    }
+
+    .stats h2 {
+      font-family: "Bebas Neue";
+      font-size: clamp(60px, 9vw, 130px);
+      line-height: 0.85;
+      max-width: 900px;
+    }
+
+    .stat-grid {
+      margin-top: 80px;
+
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+
+      border-top: 1px solid #292929;
+    }
+
+    .stat {
+      padding: 45px 20px 20px 0;
+      border-right: 1px solid #292929;
+    }
+
+    .stat:not(:first-child) {
+      padding-left: 40px;
+    }
+
+    .stat-number {
+      font-family: "Bebas Neue";
+      font-size: 90px;
+      line-height: 0.8;
+    }
+
+    .stat-name {
+      margin-top: 20px;
+      color: #777;
+      font-size: 11px;
+      letter-spacing: 3px;
+      font-weight: 800;
+    }
+
+    /* EXPLORER */
+
+    .explorer {
+      padding: 130px 7%;
+    }
+
+    .explorer-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      margin-bottom: 60px;
+    }
+
+    .explorer h2 {
+      font-family: "Bebas Neue";
+      font-size: clamp(60px, 8vw, 120px);
+      line-height: 0.8;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+    }
+
+    .tab {
+      padding: 12px 18px;
+      border: 1px solid #333;
+      background: transparent;
+      color: #777;
+      cursor: pointer;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+
+    .tab.active,
+    .tab:hover {
+      color: white;
+      border-color: #e10600;
+      background: #e10600;
+    }
+
+    .explorer-box {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+
+      min-height: 480px;
+
+      border: 1px solid #292929;
+      background: #0c0c0c;
+    }
+
+    .explorer-image {
+      position: relative;
+      overflow: hidden;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .explorer-image::after {
+      content: "";
+
+      position: absolute;
+      inset: 0;
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(225,6,0,0.2),
+          transparent 50%
+        );
+    }
+
+    .explorer-image img {
+      width: 110%;
+      transition: 0.7s;
+    }
+
+    .explorer-info {
+      padding: 60px;
+    }
+
+    .explorer-info h3 {
+      font-family: "Bebas Neue";
+      font-size: 65px;
+    }
+
+    .explorer-info p {
+      color: #777;
+      line-height: 1.8;
+      margin-top: 20px;
+      max-width: 430px;
+    }
+
+    .tech-list {
+      margin-top: 45px;
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 20px;
+    }
+
+    .tech {
+      border-top: 1px solid #333;
+      padding-top: 15px;
+    }
+
+    .tech strong {
+      font-size: 18px;
+    }
+
+    .tech span {
+      display: block;
+      color: #666;
+      font-size: 9px;
+      letter-spacing: 2px;
+      margin-top: 7px;
+    }
+
+    /* IMAGE SECTION */
+
+    .cinematic {
+      min-height: 80vh;
+
+      position: relative;
+
+      display: flex;
+      align-items: center;
+
+      padding: 8%;
+
+      background:
+        linear-gradient(
+          90deg,
+          #080808 5%,
+          rgba(8,8,8,0.55),
+          rgba(8,8,8,0.1)
+        ),
+        url("https://images.unsplash.com/photo-1541447271487-09612b3f49f7?auto=format&fit=crop&w=2000&q=85")
+        center/cover;
+    }
+
+    .cinematic-content {
+      max-width: 650px;
+    }
+
+    .cinematic h2 {
+      font-family: "Bebas Neue";
+      font-size: clamp(80px, 10vw, 160px);
+      line-height: 0.8;
+    }
+
+    .cinematic p {
+      color: #aaa;
+      line-height: 1.7;
+      max-width: 500px;
+      margin-top: 30px;
+    }
+
+    /* GARAGE */
+
+    .garage {
+      padding: 130px 7%;
+    }
+
+    .garage-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      margin-bottom: 60px;
+    }
+
+    .garage h2 {
+      font-family: "Bebas Neue";
+      font-size: clamp(70px, 9vw, 130px);
+      line-height: 0.8;
+    }
+
+    .garage-grid {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 20px;
+    }
+
+    .car-card {
+      position: relative;
+      height: 470px;
+      overflow: hidden;
+
+      background: #111;
+      border: 1px solid #222;
+
+      transition: 0.5s;
+    }
+
+    .car-card:hover {
+      border-color: #e10600;
+      transform: translateY(-8px);
+    }
+
+    .car-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+
+      transition: 0.7s;
+    }
+
+    .car-card:hover img {
+      transform: scale(1.08);
+    }
+
+    .car-overlay {
+      position: absolute;
+      inset: 0;
+
+      padding: 25px;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      background:
+        linear-gradient(
+          transparent 40%,
+          rgba(0,0,0,0.95)
+        );
+    }
+
+    .car-number {
+      font-family: "Bebas Neue";
+      font-size: 45px;
+      color: #e10600;
+    }
+
+    .car-info h3 {
+      font-family: "Bebas Neue";
+      font-size: 50px;
+    }
+
+    .car-info p {
+      color: #888;
+      font-size: 11px;
+      margin-top: 4px;
+    }
+
+    /* CTA */
+
+    .cta {
+      min-height: 80vh;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      text-align: center;
+
+      border-top: 1px solid #222;
+
+      background:
+        radial-gradient(
+          circle,
+          rgba(225,6,0,0.14),
+          transparent 40%
+        );
+    }
+
+    .cta h2 {
+      font-family: "Bebas Neue";
+      font-size: clamp(100px, 15vw, 230px);
+      line-height: 0.75;
+    }
+
+    .cta h2 span {
+      color: #e10600;
+    }
+
+    .cta p {
+      color: #777;
+      margin: 30px auto;
+    }
+
+    .cta a {
+      display: inline-block;
+      background: #e10600;
+      color: white;
+      padding: 18px 35px;
+      text-decoration: none;
+      font-weight: 900;
+      font-size: 11px;
+      letter-spacing: 1px;
+    }
+
+    /* FOOTER */
+
+    footer {
+      padding: 60px 7% 35px;
+      border-top: 1px solid #222;
+    }
+
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+    }
+
+    .footer-logo {
+      font-size: 25px;
+      font-weight: 900;
+    }
+
+    .footer-logo span {
+      color: #e10600;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 40px;
+    }
+
+    .footer-links a {
+      color: #777;
+      text-decoration: none;
+      font-size: 12px;
+    }
+
+    .footer-bottom {
+      margin-top: 70px;
+      padding-top: 20px;
+      border-top: 1px solid #222;
+
+      display: flex;
+      justify-content: space-between;
+
+      color: #555;
+      font-size: 10px;
+    }
+
+    /* REVEAL */
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: 0.9s ease;
+    }
+
+    .reveal.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 900px) {
+
+      .nav-links {
+        display: none;
+      }
+
+      .hero {
+        min-height: 850px;
+        align-items: start;
+        padding-top: 150px;
+      }
+
+      .hero-content {
+        width: 100%;
+      }
+
+      .hero h1 {
+        font-size: 100px;
+      }
+
+      .car {
+        width: 120%;
+        right: -35%;
+        top: 63%;
+      }
+
+      .hero-meta {
+        bottom: 25px;
+        gap: 25px;
+      }
+
+      .stat-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stat {
+        border-right: none;
+        border-bottom: 1px solid #292929;
+      }
+
+      .stat:not(:first-child) {
+        padding-left: 0;
+      }
+
+      .explorer-title {
+        display: block;
+      }
+
+      .tabs {
+        margin-top: 30px;
+        overflow-x: auto;
+      }
+
+      .explorer-box {
+        grid-template-columns: 1fr;
+      }
+
+      .explorer-info {
+        padding: 35px;
+      }
+
+      .tech-list {
+        grid-template-columns: 1fr;
+      }
+
+      .garage-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-top {
+        display: block;
+      }
+
+      .footer-links {
+        margin-top: 30px;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+
+      .footer-bottom {
+        display: block;
+        line-height: 2;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+
+  <nav>
+    <div class="logo">
+      APEX<span>/01</span>
+    </div>
+
+    <ul class="nav-links">
+      <li><a href="#cars">CARS</a></li>
+      <li><a href="#technology">TECHNOLOGY</a></li>
+      <li><a href="#garage">GARAGE</a></li>
+      <li><a href="#about">ABOUT</a></li>
+    </ul>
+
+    <a href="#garage" class="nav-btn">
+      EXPLORE →
+    </a>
+  </nav>
+
+
+  <!-- HERO -->
+
+  <section class="hero">
+
+    <div class="hero-grid"></div>
+
+    <div class="hero-content">
+
+      <div class="eyebrow">
+        THE ART OF SPEED / 2026
+      </div>
+
+      <h1>
+        BUILT<br>
+        FOR THE<br>
+        <span>APEX.</span>
+      </h1>
+
+      <p class="hero-sub">
+        Where engineering meets instinct.
+        Discover the machines built to turn
+        milliseconds into momentum.
+      </p>
+
+      <a href="#technology" class="hero-btn">
+        DISCOVER THE MACHINE →
+      </a>
+
+    </div>
+
+    <!-- F1 IMAGE -->
+    <img
+      class="car"
+      src="https://images.unsplash.com/photo-1541447271487-09612b3f49f7?auto=format&fit=crop&w=1800&q=90"
+      alt="Race car"
+    >
+
+    <div class="hero-meta">
+
+      <div class="meta-item">
+        <small>TOP SPEED</small>
+        <strong>350+ KM/H</strong>
+      </div>
+
+      <div class="meta-item">
+        <small>POWER UNIT</small>
+        <strong>HYBRID V6</strong>
+      </div>
+
+      <div class="meta-item">
+        <small>DOWNFORCE</small>
+        <strong>MAXIMUM</strong>
+      </div>
+
+    </div>
+
+    <div class="scroll">
+      SCROLL TO EXPLORE ↓
+    </div>
+
+  </section>
+
+
+  <!-- STATS -->
+
+  <section class="stats reveal" id="about">
+
+    <div class="section-label">
+      PERFORMANCE / 01
+    </div>
+
+    <h2>
+      EVERY<br>
+      MILLISECOND<br>
+      MATTERS.
+    </h2>
+
+    <div class="stat-grid">
+
+      <div class="stat">
+        <div class="stat-number" data-target="1.6">
+          0
+        </div>
+
+        <div class="stat-name">
+          0–100 KM/H
+        </div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-number" data-target="350">
+          0
+        </div>
+
+        <div class="stat-name">
+          TOP SPEED / KM/H
+        </div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-number" data-target="5">
+          0
+        </div>
+
+        <div class="stat-name">
+          BRAKING FORCE / G
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- EXPLORER -->
+
+  <section class="explorer reveal" id="technology">
+
+    <div class="explorer-title">
+
+      <div>
+        <div class="section-label">
+          ENGINEERING / 02
+        </div>
+
+        <h2>
+          EXPLORE<br>
+          THE MACHINE.
+        </h2>
+      </div>
+
+      <div class="tabs">
+
+        <button
+          class="tab active"
+          data-type="aero"
+        >
+          AERODYNAMICS
+        </button>
+
+        <button
+          class="tab"
+          data-type="power"
+        >
+          POWER UNIT
+        </button>
+
+        <button
+          class="tab"
+          data-type="cockpit"
+        >
+          COCKPIT
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div class="explorer-box">
+
+      <div class="explorer-image">
+
+        <img
+          id="explorerImage"
+          src="https://images.unsplash.com/photo-1541447271487-09612b3f49f7?auto=format&fit=crop&w=1200&q=85"
+          alt="Race car"
+        >
+
+      </div>
+
+
+      <div class="explorer-info">
+
+        <div class="section-label">
+          SYSTEM / <span id="systemNumber">01</span>
+        </div>
+
+        <h3 id="systemTitle">
+          AERODYNAMICS
+        </h3>
+
+        <p id="systemText">
+          Every surface is designed to control airflow,
+          maximize downforce and maintain speed through
+          the fastest corners on the circuit.
+        </p>
+
+        <div class="tech-list">
+
+          <div class="tech">
+            <strong id="tech1">WING</strong>
+            <span>COMPONENT 01</span>
+          </div>
+
+          <div class="tech">
+            <strong id="tech2">FLOOR</strong>
+            <span>COMPONENT 02</span>
+          </div>
+
+          <div class="tech">
+            <strong id="tech3">DIFFUSER</strong>
+            <span>COMPONENT 03</span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- CINEMATIC -->
+
+  <section class="cinematic reveal">
+
+    <div class="cinematic-content">
+
+      <div class="section-label">
+        PHILOSOPHY / 03
+      </div>
+
+      <h2>
+        FROM<br>
+        CIRCUIT<br>
+        TO ICON.
+      </h2>
+
+      <p>
+        Every curve, wing and surface exists for one
+        purpose — extracting more performance from
+        every lap.
+      </p>
+
+    </div>
+
+  </section>
+
+
+  <!-- GARAGE -->
+
+  <section class="garage reveal" id="garage">
+
+    <div class="garage-header">
+
+      <div>
+
+        <div class="section-label">
+          THE COLLECTION / 04
+        </div>
+
+        <h2>
+          THE<br>
+          GARAGE.
+        </h2>
+
+      </div>
+
+    </div>
+
+
+    <div class="garage-grid">
+
+      <div class="car-card">
+
+        <img
+          src="https://images.unsplash.com/photo-1541447271487-09612b3f49f7?auto=format&fit=crop&w=1000&q=85"
+          alt="Race car"
+        >
+
+        <div class="car-overlay">
+
+          <div class="car-number">
+            01
+          </div>
+
+          <div class="car-info">
+
+            <h3>
+              VELOCITY
+            </h3>
+
+            <p>
+              2026 / FORMULA MACHINE
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="car-card">
+
+        <img
+          src="https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=1000&q=85"
+          alt="Performance car"
+        >
+
+        <div class="car-overlay">
+
+          <div class="car-number">
+            02
+          </div>
+
+          <div class="car-info">
+
+            <h3>
+              APEX R
+            </h3>
+
+            <p>
+              PRECISION / PERFORMANCE
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="car-card">
+
+        <img
+          src="https://images.unsplash.com/photo-1553440569-bcc63803a83d?auto=format&fit=crop&w=1000&q=85"
+          alt="Sports car"
+        >
+
+        <div class="car-overlay">
+
+          <div class="car-number">
+            03
+          </div>
+
+          <div class="car-info">
+
+            <h3>
+              LEGACY
+            </h3>
+
+            <p>
+              HERITAGE / SPEED
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- CTA -->
+
+  <section class="cta reveal">
+
+    <div>
+
+      <div class="section-label">
+        YOUR NEXT LAP
+      </div>
+
+      <h2>
+        FIND<br>
+        YOUR <span>LIMIT.</span>
+      </h2>
+
+      <p>
+        Speed is not a destination. It's a discipline.
+      </p>
+
+      <a href="#garage">
+        ENTER THE GARAGE →
+      </a>
+
+    </div>
+
+  </section>
+
+
+  <!-- FOOTER -->
+
+  <footer>
+
+    <div class="footer-top">
+
+      <div class="footer-logo">
+        APEX<span>/01</span>
+      </div>
+
+      <div class="footer-links">
+
+        <a href="#cars">Cars</a>
+        <a href="#technology">Technology</a>
+        <a href="#garage">Garage</a>
+        <a href="#about">About</a>
+        <a href="#">Instagram</a>
+        <a href="#">YouTube</a>
+
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+
+      <span>
+        THE ART OF SPEED
+      </span>
+
+      <span>
+        © 2026 APEX / 01
+      </span>
+
+    </div>
+
+  </footer>
+
+
+  <script>
+
+    /* SCROLL REVEAL */
+
+    const revealElements =
+      document.querySelectorAll(".reveal");
+
+    const observer =
+      new IntersectionObserver(
+        (entries) => {
+
+          entries.forEach((entry) => {
+
+            if (entry.isIntersecting) {
+
+              entry.target.classList.add("show");
+
+            }
+
+          });
+
+        },
+        {
+          threshold: 0.15
+        }
+      );
+
+    revealElements.forEach((element) => {
+      observer.observe(element);
+    });
+
+
+    /* COUNTER */
+
+    const counters =
+      document.querySelectorAll(
+        ".stat-number"
+      );
+
+    let countersStarted = false;
+
+    const statsObserver =
+      new IntersectionObserver(
+        (entries) => {
+
+          if (
+            entries[0].isIntersecting &&
+            !countersStarted
+          ) {
+
+            countersStarted = true;
+
+            counters.forEach((counter) => {
+
+              const target =
+                parseFloat(
+                  counter.dataset.target
+                );
+
+              let current = 0;
+
+              const increment =
+                target / 50;
+
+              const timer =
+                setInterval(() => {
+
+                  current += increment;
+
+                  if (current >= target) {
+
+                    current = target;
+
+                    clearInterval(timer);
+
+                  }
+
+                  counter.textContent =
+                    target === 1.6
+                      ? current.toFixed(1)
+                      : Math.floor(current);
+
+                }, 25);
+
+            });
+
+          }
+
+        },
+        {
+          threshold: 0.5
+        }
+      );
+
+    statsObserver.observe(
+      document.querySelector(".stats")
+    );
+
+
+    /* EXPLORER */
+
+    const data = {
+
+      aero: {
+        number: "01",
+        title: "AERODYNAMICS",
+        text:
+          "Every surface is designed to control airflow, maximize downforce and maintain speed through the fastest corners on the circuit.",
+        tech1: "WING",
+        tech2: "FLOOR",
+        tech3: "DIFFUSER"
+      },
+
+      power: {
+        number: "02",
+        title: "POWER UNIT",
+        text:
+          "A compact hybrid power unit combines a turbocharged V6 engine with advanced energy recovery systems.",
+        tech1: "V6",
+        tech2: "TURBO",
+        tech3: "HYBRID"
+      },
+
+      cockpit: {
+        number: "03",
+        title: "COCKPIT",
+        text:
+          "A focused environment designed around the driver, where every control is within reach and every millisecond matters.",
+        tech1: "STEERING",
+        tech2: "20+ CONTROLS",
+        tech3: "PRECISION"
+      }
+
+    };
+
+
+    const tabs =
+      document.querySelectorAll(".tab");
+
+    tabs.forEach((tab) => {
+
+      tab.addEventListener(
+        "click",
+        () => {
+
+          tabs.forEach((item) =>
+            item.classList.remove("active")
+          );
+
+          tab.classList.add("active");
+
+          const type =
+            tab.dataset.type;
+
+          const selected =
+            data[type];
+
+          document.querySelector(
+            "#systemNumber"
+          ).textContent =
+            selected.number;
+
+          document.querySelector(
+            "#systemTitle"
+          ).textContent =
+            selected.title;
+
+          document.querySelector(
+            "#systemText"
+          ).textContent =
+            selected.text;
+
+          document.querySelector(
+            "#tech1"
+          ).textContent =
+            selected.tech1;
+
+          document.querySelector(
+            "#tech2"
+          ).textContent =
+            selected.tech2;
+
+          document.querySelector(
+            "#tech3"
+          ).textContent =
+            selected.tech3;
+
+        }
+      );
+
+    });
+
+  </script>
+
+</body>
+</html>
